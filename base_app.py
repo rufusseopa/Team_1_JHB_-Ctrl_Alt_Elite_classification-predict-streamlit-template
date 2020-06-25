@@ -50,6 +50,29 @@ tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl f
 train_data = pd.read_csv('https://raw.githubusercontent.com/rufusseopa/classification-predict-streamlit-template/master/Data/train.csv')
 test_data = pd.read_csv('https://raw.githubusercontent.com/rufusseopa/classification-predict-streamlit-template/master/Data/test.csv')
 
+def clean_text(raw): 
+    # Remove link
+    raw = re.sub(r'http\S+', '', raw)
+    # Remove "RT"
+    raw = re.sub('RT ', '', raw)
+    # Remove unexpected artifacts
+    raw = re.sub(r'â€¦', '', raw)
+    raw = re.sub(r'…', '', raw)
+    raw = re.sub(r'â€™', "'", raw)
+    raw = re.sub(r'â€˜', "'", raw)
+    raw = re.sub(r'\$q\$', "'", raw)
+    raw = re.sub(r'&amp;', "and", raw)
+    words = raw.split()  
+
+    return( " ".join(words))
+
+train_data['message'] = train_data['message'].apply(clean_text)
+test_data['message'] = test_data['message'].apply(clean_text)
+
+
+
+
+
 
 # The main function where we will build the actual app
 def main():
