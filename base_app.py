@@ -252,7 +252,7 @@ def main():
 			# Try loading in multiple models to give the user a choice
             
 			if select_model == "Logistic Regression":                
-				predictor = joblib.load(open(os.path.join("resources/linsvc1.pkl"),"rb"))
+				predictor = joblib.load(open(os.path.join("resources/logreg.pkl"),"rb"))
 				prediction = predictor.predict([tweet_text])
 
 			if select_model == "Linear SVC":                
