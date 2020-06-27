@@ -1,0 +1,1 @@
+More that 50% of the tweets belong to the `pro` class. Recall that the `pro` class represent tweets of people who believe in man-made climate change. This could be an indication that people are finally acknowledging this phenomenon, and more people are becoming aware of it. 
