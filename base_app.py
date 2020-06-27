@@ -121,7 +121,7 @@ def main():
         
         #product pie chart showing distribution of tweets
 		if st.checkbox('Display distribution of tweets'):
-			train_data['sentiment'].value_counts().plot(kind='pie',title='Distribution of classes',autopct='%1.1f%%')
+			train_data['sentiment'].value_counts().plot(kind='pie',title='Pie chart showing the percentages of classes',autopct='%1.1f%%',colors = ['grey','lime','brown','blue'])
 			st.pyplot()
             
         #product bar chart showing len of tweets
