@@ -112,7 +112,7 @@ def main():
 		if st.checkbox('Display distribution of tweets'):
 			train_data['sentiment'].value_counts().plot(kind='pie',title='Distribution of classes',autopct='%1.1f%%')
 			st.pyplot()
-            
+			st.markdown(open('resources/insights1.md').read())            
         #product bar chart showing len of tweets
 		if st.checkbox('Display length of tweets'):
             # Separate the classes
@@ -142,7 +142,7 @@ def main():
 			for ax in axs.flat:
 				ax.label_outer() 
 			st.pyplot()    
-
+			st.markdown(open('resources/insights2.md').read())
         
         #product wordclouds                                    
 		if st.checkbox('Display wordclouds'):
