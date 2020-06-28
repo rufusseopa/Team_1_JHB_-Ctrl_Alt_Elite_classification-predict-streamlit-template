@@ -31,9 +31,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
-import spacy
-nlp = spacy.load('en_core_web_sm')
-import pickle
 import re 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
@@ -41,14 +38,11 @@ from sklearn.pipeline import Pipeline
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
 
-# Vectorizer
-news_vectorizer = open("resources/tfidfvect.pkl","rb")
-tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl file
 
 # Load your raw data
-#raw = pd.read_csv("resources/train.csv")
+raw = pd.read_csv("resources/train.csv")
 train_data = pd.read_csv('https://raw.githubusercontent.com/rufusseopa/classification-predict-streamlit-template/master/Data/train.csv')
-test_data = pd.read_csv('https://raw.githubusercontent.com/rufusseopa/classification-predict-streamlit-template/master/Data/test.csv')
+
 
 def clean_text(raw): 
     # Remove link
@@ -67,11 +61,6 @@ def clean_text(raw):
     return( " ".join(words))
 
 train_data['message'] = train_data['message'].apply(clean_text)
-test_data['message'] = test_data['message'].apply(clean_text)
-
-
-
-
 
 
 # The main function where we will build the actual app
@@ -121,12 +110,9 @@ def main():
         
         #product pie chart showing distribution of tweets
 		if st.checkbox('Display distribution of tweets'):
-			train_data['sentiment'].value_counts().plot(labels=['Pro', 'News', 'Neutral', 'Anti'],kind='pie',title='Pie chart showing the percentages of classes',autopct='%1.1f%%',colors = ['grey','lime','brown','blue'])
+			train_data['sentiment'].value_counts().plot(kind='pie',title='Distribution of classes',autopct='%1.1f%%')
 			st.pyplot()
-         
             
-            
-        
         #product bar chart showing len of tweets
 		if st.checkbox('Display length of tweets'):
             # Separate the classes
@@ -212,7 +198,7 @@ def main():
 		st.info("Brief overview of climate change")
 		# You can read a markdown file from supporting resources folder
 		st.subheader("The following page contains information about what climate change is and the effects of it")
-		st.markdown(open('resources/info.md').read())
+		st.markdown(open('resources/climate change info.md').read())
 		image = Image.open('resources/polar bear.png')
 		st.image(image, caption='Effects on wildlife')
 
@@ -230,53 +216,10 @@ def main():
 		select_model = st.sidebar.selectbox("Choose Model", model_opt)        
 
 		if st.button("Classify"):
-            #Convert every tweet to be lower case, we do this to reduce some noise.
-			tweet_text = tweet_text.lower()
-            
-            #Remove stop words
-			def stop_words(text):
-				word = text.split()
-                #Remove stop words
-				stop_word = set(stopwords.words("english"))
-				remove_stop = [w for w in word if w not in stop_word]
-				free_stop = " ".join(remove_stop)
-				return free_stop
-			tweet_text = stop_words(tweet_text)
-            
-			spec_chars = ["!",'"',"#","%","&","'","(",")",
-              "*","+",",","-",".","/",":",";","<",
-              "=",">","?","@","[","\\","]","^","_",
-              "`","{","|","}","~","–","0123456789"]
-			for char in spec_chars:
-				tweet_text = tweet_text.replace(char, ' ')
-            
-            #remove extra space
-			#tweet_text = tweet_text.split().str.join(" ")
-            
-			def clean_ing(raw): 
-			# Remove link
-				raw = re.sub(r'http\S+', '', raw)
-                # Remove "RT"
-				raw = re.sub('RT ', '', raw)
-                # Remove unexpected artifacts
-				raw = re.sub(r'â€¦', '', raw)
-				raw = re.sub(r'…', '', raw)
-				raw = re.sub(r'â€™', "'", raw)
-				raw = re.sub(r'â€˜', "'", raw)
-				raw = re.sub(r'\$q\$', "'", raw)
-				raw = re.sub(r'&amp;', "and", raw)
-				words = raw.split()  
 
-				return( " ".join(words))
             
-			tweet_text = clean_ing(tweet_text)
+			tweet_text = clean_text(tweet_text)
          
-           
-			# Transforming user input with vectorizer
-			#vect_text = tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-            
 			if select_model == "Logistic Regression":                
 				predictor = joblib.load(open(os.path.join("resources/logreg.pkl"),"rb"))
 				prediction = predictor.predict([tweet_text])
@@ -289,9 +232,6 @@ def main():
 				predictor = joblib.load(open(os.path.join("resources/kernelsvm.pkl"),"rb"))
 				prediction = predictor.predict([tweet_text])            
             
-            
-			#predictor = joblib.load(open(os.path.join("resources/kernelsvm.pkl"),"rb"))
-			#prediction = predictor.predict([tweet_text])
             
 			st.success("Text Categorized as: {}".format(prediction))                        
 
@@ -306,8 +246,7 @@ def main():
 			elif x==-1:
 				st.success('Tweet does not support man-made climate change')
 			else:
-				st.success('Tweet neither supports nor refutes the belief of man-made climate change')                
-
+				st.success('Tweet neither supports nor refutes the belief of man-made climate change') 
 
             
 # Required to let Streamlit instantiate our web app.  
