@@ -201,7 +201,7 @@ def main():
 		st.markdown(open('resources/climate change info.md').read())
 		image = Image.open('resources/polar bear.png')
 		st.image(image, caption='Effects on wildlife')
-
+		st.markdown("Reference: https://www.nationalgeographic.com/environment/global-warming/global-warming-overview/")
 
 
 
